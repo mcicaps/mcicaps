@@ -1,0 +1,2516 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCI — لصناعة الأغطية المعدنية والبلاستيكية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+/* أنماط لوحة التحكم */
+.admin-tab-btn {
+    padding: 8px 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: var(--border-radius-md);
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.admin-tab-btn.active, .admin-tab-btn:hover {
+    background: var(--orange-500);
+}
+
+.admin-section {
+    margin-bottom: 15px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--border-radius-lg);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.admin-section h4 {
+    margin: 0 0 10px 0;
+    color: var(--orange-300);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.admin-input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--border-radius-md);
+    background: rgba(255, 255, 255, 0.08);
+    color: white;
+    font-family: 'Cairo', sans-serif;
+}
+
+.admin-btn {
+    padding: 10px 15px;
+    background: var(--orange-500);
+    border: none;
+    border-radius: var(--border-radius-md);
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-right: 5px;
+    font-family: 'Cairo', sans-serif;
+    font-weight: 600;
+}
+
+.admin-btn:hover {
+    background: var(--orange-400);
+    transform: translateY(-2px);
+}
+
+.admin-btn.secondary {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.admin-btn.secondary:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.image-preview {
+    width: 100%;
+    max-height: 150px;
+    object-fit: contain;
+    margin: 10px 0;
+    border-radius: var(--border-radius-md);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.editable {
+    outline: 2px dashed transparent;
+    transition: outline 0.3s ease;
+    padding: 2px;
+    border-radius: 3px;
+}
+
+.editable:hover {
+    outline-color: var(--orange-300);
+    background: rgba(255, 122, 24, 0.05);
+}
+
+.edit-mode .editable {
+    outline-color: var(--orange-300);
+    background: rgba(255, 122, 24, 0.05);
+    cursor: pointer;
+}
+
+#adminToggleBtn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+    background: var(--orange-500);
+    color: white;
+    border: none;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: var(--shadow-orange);
+    display: none; /* تغيير إلى flex إذا أردت إظهاره */
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+}
+
+.overlay-dark {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 9998;
+    display: none;
+}
+        :root {
+            --blue-dark: #0a1b3d;
+            --blue-dark-2: #07142e;
+            --blue-light: #1e3a8a;
+            --blue-light-2: #2d4bac;
+            --blue-gradient: linear-gradient(135deg, #0a1b3d, #001f5c);
+            --blue-gradient-2: linear-gradient(135deg, #07142e, #001846);
+            --orange-500: #ff7a18;
+            --orange-400: #ff9440;
+            --orange-300: #ffad6a;
+            --orange-200: #ffc89c;
+            --text-light: #f8fafc;
+            --text-gray: #cbd5e1;
+            --text-dark: #1e293b;
+            --gold: #ffd700;
+            --silver: #c0c0c0;
+            --maxw: 1200px;
+            --anim: 420ms cubic-bezier(0.2, 0.9, 0.2, 1);
+            --border-radius-sm: 8px;
+            --border-radius-md: 12px;
+            --border-radius-lg: 16px;
+            --border-radius-xl: 20px;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.15);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.2);
+            --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.25);
+            --shadow-orange: 0 8px 20px rgba(255, 122, 24, 0.35);
+            --shadow-orange-hover: 0 12px 30px rgba(255, 122, 24, 0.45);
+            --text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            --box-shadow-3d: 0 10px 30px rgba(0, 0, 0, 0.2), 0 5px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: var(--blue-dark);
+            color: var(--text-light);
+            line-height: 1.8;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: var(--maxw);
+            margin: auto;
+            padding: 0 20px;
+        }
+
+        /* مؤشر التقدم */
+        .progress-container {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 4px;
+            background: transparent;
+            z-index: 1000;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: linear-gradient(90deg, var(--orange-300), var(--orange-500));
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Header */
+        header.header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(30, 58, 138, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow-md);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s ease;
+        }
+
+        .header.scrolled {
+            background: rgba(10, 27, 61, 0.98);
+            padding: 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .header.scrolled .logo {
+            transform: scale(0.95);
+        }
+
+        .header.scrolled nav.main-nav a {
+            padding: 8px 14px;
+            font-size: 0.95rem;
+        }
+
+        .header .wrap {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+            transition: all 0.4s ease;
+        }
+
+        .logo {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+            padding: 12px 18px;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+
+        .logo:hover {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.15));
+            transform: scale(1.05);
+            box-shadow: var(--shadow-md);
+        }
+
+        .logo img {
+            width: 140px;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover img {
+            transform: rotate(-2deg);
+        }
+
+        nav.main-nav ul {
+            display: flex;
+            gap: 12px;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+
+        nav.main-nav a {
+            padding: 10px 16px;
+            border-radius: var(--border-radius-md);
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all var(--anim);
+            position: relative;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid transparent;
+        }
+
+        nav.main-nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--orange-300);
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        nav.main-nav a:hover::after {
+            width: 100%;
+            right: 0;
+        }
+
+        nav.main-nav a:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .main-cta {
+            margin-inline-start: 20px;
+            padding: 12px 22px;
+            border-radius: var(--border-radius-lg);
+            border: none;
+            background: linear-gradient(90deg, var(--orange-500), var(--orange-300));
+            color: #fff;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: var(--shadow-orange);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .main-cta::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .main-cta:hover::before {
+            left: 100%;
+        }
+
+        .main-cta:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: var(--shadow-orange-hover);
+        }
+
+        /* Language Switch */
+        .lang-switch {
+            position: absolute;
+            top: 12px;
+            right: 20px;
+            z-index: 200;
+            display: flex;
+            gap: 8px;
+        }
+
+        .lang-switch button {
+            padding: 8px 14px;
+            border: none;
+            border-radius: var(--border-radius-md);
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .lang-switch button.active {
+            background: var(--orange-500);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .lang-switch button:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Hero */
+        .hero {
+            padding: 100px 20px;
+            background: var(--blue-gradient);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            perspective: 1000px;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%23ff7a18' fill-opacity='0.1' d='M0,128L48,117.3C96,107,192,85,288,112C384,139,480,213,576,224C672,235,768,181,864,181.3C960,181,1056,235,1152,234.7C1248,235,1344,181,1392,154.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E"), radial-gradient(circle at 20% 30%, rgba(255, 122, 24, 0.15) 0%, transparent 40%), radial-gradient(circle at 80% 70%, rgba(30, 58, 138, 0.2) 0%, transparent 40%);
+            background-attachment: fixed, fixed, fixed;
+            background-size: cover, 800px 800px, 600px 600px;
+            background-position: center, 20% 30%, 80% 70%;
+            background-repeat: no-repeat;
+            opacity: 0.7;
+            transform: translateZ(-10px) scale(2);
+        }
+
+        .hero::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at top left, rgba(255, 122, 24, 0.15), transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: clamp(32px, 5vw, 56px);
+            margin-bottom: 20px;
+            color: #fff;
+            animation: fadeUp 1s ease forwards;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
+            font-weight: 800;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 20px;
+            margin-bottom: 24px;
+            color: #fff;
+            animation: fadeUp 1.2s ease forwards;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+            animation: fadeUp 1.4s ease forwards;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border-radius: var(--border-radius-lg);
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.3s ease, background 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(255, 255, 255, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .btn:hover::after {
+            opacity: 1;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+        }
+
+        .btn.primary {
+            background: linear-gradient(90deg, var(--orange-500), var(--orange-300));
+            color: #fff;
+            box-shadow: var(--shadow-orange);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn.primary:hover {
+            background: linear-gradient(90deg, var(--orange-300), var(--orange-500));
+            box-shadow: 0 12px 30px rgba(255, 122, 24, 0.5);
+        }
+
+        .btn.ghost {
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.7);
+            color: #fff;
+        }
+
+        .btn.ghost:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* تأثيرات جلب الانتباه */
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        .cta-highlight {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-highlight::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+
+        /* Sections */
+        section {
+            padding: 80px 0;
+            position: relative;
+        }
+
+        .section-head {
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .section-head h2 {
+            font-size: 36px;
+            margin-bottom: 12px;
+            animation: fadeUp 0.8s ease forwards;
+            position: relative;
+            display: inline-block;
+            padding-bottom: 10px;
+            color: var(--text-light);
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .section-head h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 50%;
+            transform: translateX(50%);
+            width: 80px;
+            height: 4px;
+            background: var(--orange-500);
+            border-radius: 2px;
+            box-shadow: 0 2px 4px rgba(255, 122, 24, 0.3);
+        }
+
+        .section-sub {
+            color: var(--text-gray);
+            font-size: 18px;
+            animation: fadeUp 1s ease forwards;
+            max-width: 600px;
+            margin: 0 auto;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Chairman Section - القسم الجديد */
+        .chairman-section {
+            background: linear-gradient(to right, var(--blue-dark), var(--blue-light));
+            padding: 80px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chairman-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%23ff7a18' fill-opacity='0.05' d='M0,128L48,117.3C96,107,192,85,288,112C384,139,480,213,576,224C672,235,768,181,864,181.3C960,181,1056,235,1152,234.7C1248,235,1344,181,1392,154.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
+            background-size: cover;
+            background-position: center;
+            opacity: 0.5;
+        }
+
+        .chairman-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .chairman-image {
+            position: relative;
+            border-radius: var(--border-radius-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .chairman-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .chairman-image:hover img {
+            transform: scale(1.05);
+        }
+
+        .chairman-image::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent 60%, rgba(0, 0, 0, 0.7));
+        }
+
+        .chairman-info {
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--border-radius-lg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .chairman-info h3 {
+            font-size: 28px;
+            margin-bottom: 15px;
+            color: var(--orange-300);
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .chairman-info .position {
+            font-size: 18px;
+            color: var(--text-gray);
+            margin-bottom: 20px;
+            display: block;
+            font-weight: 600;
+        }
+
+        .chairman-message {
+            font-size: 18px;
+            line-height: 1.8;
+            color: var(--text-light);
+            margin-bottom: 25px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .signature {
+            text-align: left;
+            font-family: 'Cairo', cursive;
+            font-size: 24px;
+            color: var(--orange-300);
+            margin-top: 20px;
+        }
+
+        /* Grid Layouts */
+        .products-grid, .factories, .quality, .clients, .events-strip {
+            display: grid;
+            gap: 25px;
+        }
+
+        .products-grid {
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        }
+
+        .factories {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .quality {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .clients {
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        }
+
+        .events-strip {
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        }
+
+        /* Cards & Hover Effects */
+        .product, .event-card, .factory, .cert, .client {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border-radius: var(--border-radius-lg);
+            padding: 20px;
+            transition: transform 0.4s ease, background 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: var(--shadow-sm);
+            transform-style: preserve-3d;
+        }
+
+        .product::before, .event-card::before, .factory::before, .cert::before, .client::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .product:hover::before, .event-card:hover::before, .factory:hover::before, .cert:hover::before, .client:hover::before {
+            opacity: 1;
+        }
+
+        .product img, .event-card img, .factory img, .cert img, .client img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            border-radius: var(--border-radius-md);
+            transition: transform 0.5s ease, filter 0.5s ease;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .product:hover img, .event-card:hover img, .factory:hover img, .cert:hover img, .client:hover img {
+            transform: scale(1.08);
+            filter: brightness(1.1);
+        }
+
+        .product:hover, .event-card:hover, .factory:hover, .cert:hover, .client:hover {
+            transform: translateY(-10px) rotateX(5deg) rotateY(5deg) scale(1.03);
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            box-shadow: var(--box-shadow-3d);
+            border-color: rgba(255, 122, 24, 0.3);
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.85), transparent 70%);
+            color: #fff;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 20px;
+            font-weight: 700;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            border-radius: var(--border-radius-lg);
+        }
+
+        .product:hover .overlay, .factory:hover .overlay, .event-card:hover .overlay, .cert:hover .overlay, .client:hover .overlay {
+            opacity: 1;
+        }
+
+        /* About Section - تم التعديل هنا */
+        .about-section {
+            padding: 60px 0;
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            margin-top: 30px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .about-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--orange-500), var(--blue-light), var(--blue-dark));
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .about-grid p {
+            font-size: 18px;
+            line-height: 1.8;
+            color: var(--text-gray);
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .features-list {
+            list-style: none;
+            margin: 30px 0;
+        }
+
+        .features-list li {
+            padding: 15px;
+            margin-bottom: 15px;
+            background: linear-gradient(to right, rgba(248, 249, 250, 0.05), rgba(233, 242, 251, 0.1));
+            border-right: 4px solid var(--blue-light);
+            border-radius: 4px;
+            transition: transform 0.3s ease;
+            color: var(--text-light);
+        }
+
+        .features-list li:hover {
+            transform: translateX(-5px);
+            background: linear-gradient(to right, rgba(233, 242, 251, 0.15), rgba(212, 229, 247, 0.2));
+        }
+
+        .mission-statement {
+            background: linear-gradient(135deg, var(--blue-light) 0%, var(--blue-dark) 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 40px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .mission-statement h3 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: var(--orange-300);
+        }
+
+        .mission-text {
+            font-size: 1.2rem;
+            line-height: 1.8;
+        }
+
+        .highlight {
+            color: var(--orange-300);
+            font-weight: bold;
+        }
+
+        /* Contact */
+        .contact-card {
+            display: grid;
+            gap: 30px;
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .contact-info {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            padding: 25px;
+            border-radius: var(--border-radius-lg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .contact-info h3 {
+            color: var(--orange-300);
+            margin-bottom: 15px;
+            font-size: 22px;
+        }
+
+        .contact-info p {
+            margin-bottom: 10px;
+            color: var(--text-gray);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .contact-info p::before {
+            content: '•';
+            color: var(--orange-400);
+            font-weight: bold;
+        }
+
+        .contact-card input, .contact-card textarea {
+            width: 100%;
+            padding: 14px;
+            border-radius: var(--border-radius-md);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 15px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            transition: box-shadow 0.3s, border-color 0.3s;
+            font-family: inherit;
+        }
+
+        .contact-card input:focus, .contact-card textarea:focus {
+            outline: none;
+            box-shadow: 0 0 12px rgba(255, 122, 24, 0.5);
+            border-color: rgba(255, 122, 24, 0.5);
+        }
+
+        .contact-card input::placeholder, .contact-card textarea::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .contact-card textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        /* تحسينات النماذج */
+        .contact-card input:valid, .contact-card textarea:valid {
+            border-color: rgba(0, 255, 0, 0.3);
+        }
+
+        .contact-card input:invalid:not(:placeholder-shown), .contact-card textarea:invalid:not(:placeholder-shown) {
+            border-color: rgba(255, 0, 0, 0.3);
+        }
+
+        /* Footer */
+        footer.site-footer {
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.85));
+            color: var(--text-gray);
+            padding: 40px 0 20px;
+            text-align: center;
+            font-size: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: var(--maxw);
+            margin: 0 auto;
+            padding: 0 20px;
+            align-items: center;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            color: white;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .social-links a:hover {
+            background: var(--orange-500);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-orange);
+        }
+
+        /* Animations */
+        @keyframes fadeUp {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: var(--shadow-orange);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 0 20px rgba(255, 122, 24, 0.6);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: var(--shadow-orange);
+            }
+        }
+
+        @keyframes shine {
+            0% {
+                transform: translateX(-100%) rotate(45deg);
+            }
+           100% {
+                transform: translateX(100%) rotate(45deg);
+            }
+        }
+
+        @keyframes blink {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0;
+            }
+        }
+
+        [data-animate] {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        [data-animate].active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* تأثيرات كتابة */
+        .typing-effect::after {
+            content: '|';
+            animation: blink 1s infinite;
+        }
+
+        /* تأثيرات إضافية للون */
+        .glow-text {
+            text-shadow: 0 0 10px rgba(255, 122, 24, 0.7), 0 0 20px rgba(255, 122, 24, 0.5);
+        }
+
+        .neon-border {
+            box-shadow: 0 0 5px rgba(255, 122, 24, 0.7), 0 0 10px rgba(255, 122, 24, 0.5), inset 0 0 5px rgba(255, 122, 24, 0.3);
+        }
+
+        /* المنتجات الجديدة */
+        .products-container {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            max-width: var(--maxw);
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .product-item {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 30px;
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border-radius: var(--border-radius-lg);
+            padding: 25px;
+            transition: all 0.4s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: var(--shadow-sm);
+            transform-style: preserve-3d;
+        }
+
+        .product-item:hover {
+            transform: translateY(-5px) rotateX(5deg) rotateY(5deg);
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            box-shadow: var(--box-shadow-3d);
+            border-color: rgba(255, 122, 24, 0.3);
+        }
+
+        .product-info {
+            flex: 1;
+            text-align: right;
+        }
+
+        .product-info h3 {
+            font-size: 24px;
+            margin-bottom: 12px;
+            color: var(--orange-300);
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        .product-info p {
+            color: var(--text-gray);
+            line-height: 1.7;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-image {
+            flex: 1;
+            overflow: hidden;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-md);
+        }
+
+        .product-image img {
+            width: 100%;
+            height: auto;
+            max-width: 1344px;
+            max-height: 768px;
+            object-fit: contain;
+            transition: transform 0.5s ease;
+        }
+
+        .product-item:hover .product-image img {
+            transform: scale(1.05);
+        }
+
+        /* نافذة معاينة الكتالوج */
+        .catalog-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(8px);
+            animation: modalBgFadeIn 0.3s ease;
+        }
+
+        @keyframes modalBgFadeIn {
+            from {
+                backdrop-filter: blur(0);
+                background-color: rgba(0, 0, 0, 0);
+            }
+            to {
+                backdrop-filter: blur(8px);
+                background-color: rgba(0, 0, 0, 0.9);
+            }
+        }
+
+        .catalog-content {
+            background: var(--blue-gradient-2);
+            padding: 35px;
+            border-radius: var(--border-radius-xl);
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+            box-shadow: var(--shadow-lg);
+            animation: modalFadeIn 0.5s ease;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .catalog-content::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .catalog-content h3 {
+            font-size: 26px;
+            margin-bottom: 20px;
+            color: var(--orange-300);
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 1;
+        }
+
+        .catalog-content p {
+            margin-bottom: 25px;
+            line-height: 1.6;
+            font-size: 17px;
+            color: var(--text-light);
+            position: relative;
+            z-index: 1;
+        }
+
+        .catalog-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
+        }
+
+        .catalog-buttons button {
+            padding: 14px 28px;
+            border: none;
+            border-radius: var(--border-radius-md);
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .catalog-buttons .download-btn {
+            background: linear-gradient(90deg, var(--orange-500), var(--orange-300));
+            color: white;
+            box-shadow: var(--shadow-orange);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .catalog-buttons .download-btn:hover {
+            background: linear-gradient(90deg, var(--orange-300), var(--orange-500));
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 122, 24, 0.4);
+        }
+
+        .catalog-buttons .cancel-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .catalog-buttons .cancel-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+
+        /* فيديو MCI */
+        .video-container {
+            position: relative;
+            width: 100%;
+            margin-bottom: 30px;
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .video-container::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(255, 122, 24, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .video-container video {
+            width: 100%;
+            display: block;
+            border-radius: var(--border-radius-lg);
+        }
+
+        .about-image {
+            width: 100%;
+            border-radius: var(--border-radius-lg);
+            height: auto;
+            max-height: 480px;
+            object-fit: cover;
+            transform: translateZ(0);
+            box-shadow: var(--shadow-lg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* تصميم مصغر للعملاء */
+        .clients-section {
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.1));
+            padding: 60px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .client {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
+            padding: 15px;
+            border-radius: var(--border-radius-md);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: var(--shadow-sm);
+            transform-style: preserve-3d;
+        }
+
+        .client img {
+            width: 80px !important;
+            height: 80px !important;
+            object-fit: contain;
+            border-radius: 50%;
+            padding: 10px;
+            background: white;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .client:hover img {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 5px 15px rgba(255, 122, 24, 0.3);
+        }
+
+        .client .overlay {
+            padding: 10px;
+            font-size: 14px;
+            text-align: center;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: var(--border-radius-md);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .factories, .quality {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .about-grid {
+                grid-template-columns: 1fr;
+            }
+            .product-item {
+                flex-direction: column;
+                text-align: center;
+            }
+            .product-info {
+                text-align: center;
+            }
+            .contact-card {
+                grid-template-columns: 1fr;
+            }
+            .chairman-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header .wrap {
+                flex-direction: column;
+                gap: 15px;
+            }
+            nav.main-nav ul {
+                justify-content: center;
+            }
+            .main-cta {
+                margin-inline-start: 0;
+                margin-top: 10px;
+            }
+            .hero {
+                padding: 80px 20px;
+            }
+            .hero h1 {
+                font-size: 28px;
+            }
+            .hero p {
+                font-size: 16px;
+            }
+            .hero-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            .section-head h2 {
+                font-size: 28px;
+            }
+            .clients {
+                grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+                gap: 15px;
+            }
+            .client img {
+                width: 60px !important;
+                height: 60px !important;
+            }
+            .catalog-content {
+                padding: 25px 20px;
+            }
+            .chairman-info h3 {
+                font-size: 24px;
+            }
+            .chairman-message {
+                font-size: 16px;
+            }
+            .mission-statement {
+                padding: 20px;
+            }
+            .mission-text {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+            .contact-card {
+                grid-template-columns: 1fr;
+            }
+            .catalog-buttons {
+                flex-direction: column;
+            }
+            .catalog-buttons button {
+                width: 100%;
+                justify-content: center;
+            }
+            .logo {
+                margin-bottom: 10px;
+            }
+            .lang-switch {
+                position: relative;
+                top: 0;
+                right: 0;
+                justify-content: center;
+                margin-top: 15px;
+            }
+        }
+
+        /* شريط التمرير المخصص */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--blue-dark-2);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, var(--orange-500), var(--orange-300));
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(to bottom, var(--orange-400), var(--orange-200));
+        }
+
+        /* تأثيرات تحميل الصور */
+        img {
+            transition: opacity 0.5s ease;
+            content-visibility: auto;
+        }
+
+        img[data-src] {
+            opacity: 0;
+        }
+
+        img.loaded {
+            opacity: 1;
+        }
+
+        /* تحسينات للأداء */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* تأثيرات إضافية */
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        .glow {
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                box-shadow: 0 0 10px rgba(255, 122, 24, 0.5);
+            }
+            to {
+                box-shadow: 0 0 20px rgba(255, 122, 24, 0.8);
+            }
+        }
+
+        /* أنماط خلفية ديناميكية */
+        .dynamic-bg {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dynamic-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 35%, rgba(255, 122, 24, 0.1) 0%, transparent 25%), radial-gradient(circle at 75% 44%, rgba(30, 58, 138, 0.1) 0%, transparent 25%), radial-gradient(circle at 50% 70%, rgba(10, 27, 61, 0.1) 0%, transparent 25%);
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- مؤشر التقدم -->
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <header class="header">
+        <div class="wrap container">
+            <a href="/" class="logo"><img src="images/logo.png" alt="شعار MCI"></a>
+            <nav class="main-nav" role="navigation">
+                <ul>
+                    <li><a href="#about">من نحن</a></li>
+                    <li><a href="#chairman">كلمة رئيس مجلس الإدارة</a></li>
+                    <li><a href="#products">المنتجات</a></li>
+                    <li><a href="#factories">المصانع</a></li>
+                    <li><a href="#quality">الجودة</a></li>
+                    <li><a href="#events">الأحداث</a></li>
+                    <li><a href="#clients">عملاؤنا</a></li>
+                    <li><a href="#contact">اتصل بنا</a></li>
+                </ul>
+                <button class="main-cta" onclick="document.querySelector('#contact').scrollIntoView({behavior:'smooth'})">اطلب عرض سعر</button>
+            </nav>
+            <div class="lang-switch">
+                <button class="active" onclick="switchLang('ar')">عربي</button>
+                <button onclick="switchLang('en')">EN</button>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero parallax dynamic-bg" data-animate>
+        <div class="hero-content">
+            <h1 id="hero-title">شريكك الموثوق في حلول التعبئة والتغليف</h1>
+            <p id="hero-sub">أغطية دوائية وصناعية متقدمة مع التزام تام بمعايير الجودة العالمية.</p>
+            <div class="hero-actions">
+                <button class="btn primary pulse" onclick="document.querySelector('#products').scrollIntoView({behavior:'smooth'})">
+                    <i class="fas fa-box-open"></i> استعرض المنتجات
+                </button>
+                <button class="btn ghost cta-highlight" onclick="showCatalogModal()">
+                    <i class="fas fa-download"></i> حمّل الكتالوج
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- قسم من نحن - تم التعديل هنا -->
+    <section id="about" class="about-section" data-animate>
+        <div class="section-head">
+            <h2 id="about-title">من نحن</h2>
+            <div class="section-sub" id="about-sub">تاريخ وخبرة أكثر من ثلاثون عامًا</div>
+        </div>
+        <div class="container">
+            <div class="about-grid">
+                <div>
+                    <div class="video-container">
+                        <video controls poster="images/video-poster.jpeg">
+                            <source src="videos/mci-intro.mp4" type="video/mp4">
+                            متصفحك لا يدعم تشغيل الفيديو.
+                        </video>
+                    </div>
+                    <img src="images/mcipic1.jpeg" alt="صورة MCI" class="about-image">
+                </div>
+                <div>
+                    <p id="about-text">
+                        <span class="highlight">شركة MCI لصناعة أغطية المعادن والبلاستيك</span>: شركة رائدة بدأت مسيرتها عام 1993 في سوريا، متخصصة في مجال المستحضرات الصيدلانية والمواد المساعدة للصناعة الدوائية (المواد الخام، العبوات، السدادات، الأغطية، وغيرها).
+                    </p>
+                    
+                    <p id="about-text">
+                        <span class="highlight">نحن MCI: ريادة لا تتوقف</span>: في عام 2011، دخلت الشركة مرحلة جديدة من التطوير والتوسع، ووقع الاختيار على <span class="highlight">جمهورية مصر العربية</span> كوجهة استراتيجية، وذلك بفضل:
+                    </p>
+                    
+                    <ul class="features-list">
+                        <li>بيئتها الاستثمارية الجاذبة والمتميزة، والدعم غير المسبوق من الحكومة المصرية</li>
+                        <li>حجم السوق المحلي الكبير والواعد</li>
+                        <li>شبكة الاتفاقيات التجارية الواسعة مع دول العالم، مما يفتح آفاقًا جديدة للوصول إلى الأسواق العالمية</li>
+                    </ul>
+                    
+                    <div class="mission-statement">
+                        <h3>رؤيتنا</h3>
+                        <p class="mission-text">MCI: من الرواد المحليين إلى لاعب عالمي، برؤية جديدة من أرض مصر</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- قسم كلمة رئيس مجلس الإدارة - القسم الجديد -->
+    <section id="chairman" class="chairman-section" data-animate>
+        <div class="section-head">
+            <h2>كلمة رئيس مجلس الإدارة</h2>
+            <div class="section-sub">رؤية تقود نحو التميز والابتكار</div>
+        </div>
+        <div class="container chairman-content">
+            <div class="chairman-image">
+                <img src="images/chairman.jpeg" alt="رئيس مجلس الإدارة">
+            </div>
+            <div class="chairman-info">
+                <h3>د. خالد زيني</h3>
+                <span class="position">رئيس مجلس الإدارة</span>
+                <p class="chairman-message">
+                    يسعدني أن أرحب بكم في MCI، الشركة الرائدة في مجال حلول التعبئة والتغليف الدوائي. منذ تأسيسنا في عام 1993، ونحن نعمل برؤية واضحة تتمثل في تقديم منتجات عالية الجودة تلبي أعلى المعايير العالمية. 
+                    <br><br>
+                    نحن نؤمن بأن الابتكار والجودة هما الركيزتان الأساسيتان لتحقيق النجاح في قطاع الأدوية. لذلك، نستثمر باستمرار في البحث والتطوير لضمان أن منتجاتنا لا تلبي احتياجاتكم فحسب، بل تتجاوز توقعاتكم.
+                    <br><br>
+                    نفتخر بشراكاتنا الطويلة مع كبرى شركات الأدوية، ونعتز بثقتكم التي دفعتنًا للنمو والتوسع عبر السنين. نتطلع دائمًا إلى futuro مليء بالإنجازات والشراكات الجديدة.
+                </p>
+                <div class="signature">د. خالد زيني</div>
+            </div>
+        </div>
+    </section>
+
+    <section id="products" data-animate>
+        <div class="section-head">
+            <h2 id="products-title">المنتجات</h2>
+            <div class="section-sub" id="products-sub">مجموعة متخصصة بدون أسعار</div>
+        </div>
+        <div class="products-container" id="productsContainer">
+            <!-- سيتم إضافة المنتجات هنا عبر JavaScript -->
+        </div>
+    </section>
+
+    <section id="events" data-animate>
+        <div class="section-head">
+            <h2 id="events-title">الأحداث</h2>
+        </div>
+        <div class="events-strip" id="eventsStrip"></div>
+    </section>
+
+    <section id="factories" data-animate>
+        <div class="section-head">
+            <h2 id="factories-title">المصانع</h2>
+        </div>
+        <div class="factories" id="factoriesGrid"></div>
+    </section>
+
+    <section id="quality" data-animate>
+        <div class="section-head">
+            <h2 id="quality-title">شهادات الجودة</h2>
+        </div>
+        <div class="quality" id="qualityRow"></div>
+    </section>
+
+    <section id="clients" class="clients-section dynamic-bg" data-animate>
+        <div class="section-head">
+            <h2 id="clients-title">عملاؤنا</h2>
+        </div>
+        <div class="container">
+            <div class="clients" id="clientsRow"></div>
+        </div>
+    </section>
+
+    <section id="contact" data-animate>
+        <div class="section-head">
+            <h2 id="contact-title">اتصل بنا</h2>
+        </div>
+        <div class="container contact-card">
+            <div class="contact-info">
+                <hr style="border-color: rgba(255,255,255,0.2); margin:20px 0;">
+                <h3>Contact Us</h3>
+                <p>Address: Block 93/94/111, A6, 10th Of Ramadan City, Sharqia, Egypt</p>
+                <p>Tel: +20 5543 36060 / 61 / 62</p>
+                <p>Mobile: +20 1000 092622 / +20 1000 070247</p>
+                <p>Pharmaceutical Container Closuer Caps & Packaging</p>
+                <p>Metal & Plastic Caps Industries</p>
+                <p>Website: www.mcicaps.com</p>
+                <p>Email: managermci@gmail.com</p>
+                <p>Sales Dpt: sales@mcicaps.com / Export Dpt: Khaledzini@mcicaps.com</p>
+            </div>
+            <div>
+                <form method="mailto:managermci@gmail.com" enctype="text/plain">
+                    <input placeholder="الاسم الكامل" required>
+                    <input type="email" placeholder="البريد الإلكتروني" required>
+                    <textarea rows="5" placeholder="رسالتك" required></textarea>
+                    <button class="btn primary" type="submit">
+                        <i class="fas fa-paper-plane"></i> إرسال
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="social-links">
+                <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            </div>
+            <div>© <span id="year"></span> MCI — جميع الحقوق محفوظة</div>
+        </div>
+    </footer>
+
+    <!-- نافذة معاينة الكتالوج -->
+    <div class="catalog-modal" id="catalogModal">
+        <div class="catalog-content">
+            <h3>كتالوج منتجات MCI</h3>
+            <p>يحتوي الكتالوج على معلومات كاملة عن جميع منتجاتنا من أغطية الأدوية وحلول التغليف الدوائي. اضغط على زر التحميل لتحميل الكتالوج بصيغة PDF.</p>
+            <div class="catalog-buttons">
+                <button class="download-btn" onclick="downloadCatalog()">
+                    <i class="fas fa-download"></i> تحميل الكتالوج
+                </button>
+                <button class="cancel-btn" onclick="closeCatalogModal()">
+                    <i class="fas fa-times"></i> إلغاء
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // محتوى البيانات
+        const PRODUCTS = [
+            { name: 'أغطية الألومنيوم Pilfer Proof Caps', img: 'images/products/product1.jpeg', desc: 'أغطية ألومنيوم عالية الجودة مزودة بخصائص مقاومة العبث لتأمين المحتويات الدوائية. مثالية للعبوات الزجاجية والبلاستيكية.' },
+            { name: 'أغطية Flip-Off للفيال', img: 'images/products/product2.jpeg', desc: 'أغطية فل أوف مصممة خصيصًا للفيالات الدوائية، توفر ختمًا محكمًا وسهولة في الفتح مع الحفاظ على التعقيم.' },
+            { name: 'أغطية بلاستيكية Pilfer Proof', img: 'images/products/product3.jpeg', desc: 'أغطية بلاستيكية متينة مع نظام مقاومة العبث، مناسبة للصناعات الدوائية والغذائية.' },
+            { name: 'قطارة الفم Oral Droppers', img: 'images/products/product4.jpeg', desc: 'قطارات فم دقيقة الجرعات مصنوعة من مواد آمنة للاستخدام الدوائي، توفر دقة في الجرعات وسهولة في الاستخدام.' },
+            { name: 'أكواب الجرعات Dosage Cups', img: 'images/products/product5.png', desc: 'أكواب جرعات بلاستيكية معلمة بمقاييس دقيقة لضمان الجرعات الصحيحة، مناسبة للاستخدام مع الأدوية السائلة.' },
+            { name: 'هنجر - حامل محاليل Hanger', img: 'images/products/product6.jpeg', desc: 'حوامل محاليل طبية متينة قابلة للتعديل، مصممة لتثبيت أكياس المحاليل الطبية بشكل آمن وسهل.' },
+            { name: 'Our New Product CRC 28mm', img: 'images/products/product7.jpeg', desc: 'منتجنا الجديد CRC 28mm، غطاء مقاوم للأطفال مع خصائص أمان متطورة لمنع الفتح العشوائي.' }
+        ];
+        const EVENTS = [
+            { title: 'Pharmaconex 2025 - Egypt', img: 'images/event1.jpg' },
+            { title: 'Interpack 2025 - Germany', img: 'images/event2.jpg' }
+        ];
+        const FACTORIES = [
+            { name: 'مصنع 1', img: 'images/factory1.jpg' },
+            { name: 'مصنع 2', img: 'images/factory2.jpg' },
+            { name: 'مصنع 3', img: 'images/factory3.jpg' },
+            { name: 'مصنع 4', img: 'images/factory4.jpg' }
+        ];
+        const CERTS = [
+            { name: 'ISO 9001', img: 'images/iso/iso9001.jpg' },
+            { name: 'ISO 14001', img: 'images/iso/iso14001.jpg' },
+            { name: 'ISO 22000', img: 'images/iso/iso22000.jpg' },
+            { name: 'ISO 45001', img: 'images/iso/iso45001.jpg' }
+        ];
+        const CLIENTS = [
+            { title: 'Octobar Pharma - Egypt', img: 'images/client1.jpg' },
+            { title: 'MUP - Egypt', img: 'images/client2.png' },
+            { title: 'MISR - Egypt', img: 'images/client3.jpg' },
+            { title: 'Pharco B - Egypt', img: 'images/client4.jpg' },
+            { title: 'Unipharma - Egypt', img: 'images/client5.jpg' },
+            { title: 'SIDICO - Egypt', img: 'images/client6.jpg' }
+        ];
+
+        // Render functions
+        function renderProducts() {
+            document.getElementById('productsContainer').innerHTML = PRODUCTS.map(p => `
+                <div class="product-item card-3d">
+                    <div class="product-info">
+                        <h3>${p.name}</h3>
+                        <p>${p.desc}</p>
+                    </div>
+                    <div class="product-image">
+                        <img src="${p.img}" alt="${p.name}" loading="lazy">
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderEvents() {
+            document.getElementById('eventsStrip').innerHTML = EVENTS.map(e => `
+                <div class="event-card card-3d">
+                    <img src="${e.img}" alt="${e.title}" loading="lazy">
+                    <div class="overlay">${e.title}</div>
+                </div>
+            `).join('');
+        }
+
+        function renderFactories() {
+            document.getElementById('factoriesGrid').innerHTML = FACTORIES.map(f => `
+                <div class="factory card-3d">
+                    <img src="${f.img}" alt="${f.name}" loading="lazy">
+                    <div class="overlay">${f.name}</div>
+                </div>
+            `).join('');
+        }
+
+        function renderCerts() {
+            document.getElementById('qualityRow').innerHTML = CERTS.map(c => `
+                <div class="cert card-3d">
+                    <img src="${c.img}" alt="${c.name}" loading="lazy">
+                    <div class="overlay">${c.name}</div>
+                </div>
+            `).join('');
+        }
+
+        function renderClients() {
+            document.getElementById('clientsRow').innerHTML = CLIENTS.map(cl => `
+                <div class="client card-3d">
+                    <img src="${cl.img}" alt="${cl.title}" loading="lazy">
+                    <div classoverlay">${cl.title}</div>
+                </div>
+            `).join('');
+        }
+
+        // وظائف معاينة وتحميل الكتالوج
+        function showCatalogModal() {
+            document.getElementById('catalogModal').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeCatalogModal() {
+            document.getElementById('catalogModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        function downloadCatalog() {
+            // إنشاء رابط تحميل لملف PDF
+            const link = document.createElement('a');
+            link.href = 'catalog/mci-catalog.pdf';
+            link.download = 'MCI-Product-Catalog.pdf';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            // إغلاق النافذة بعد بدء التحميل
+            setTimeout(closeCatalogModal, 500);
+        }
+
+        // إغلاق النافذة عند النقر خارج المحتوى
+        document.getElementById('catalogModal').addEventListener('click', function (e) {
+            if (e.target === this) {
+                closeCatalogModal();
+            }
+        });
+
+        // إغلاق النافذة بالضغط على زر Escape
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                closeCatalogModal();
+            }
+        });
+
+        // تحسين تحميل الصور
+        function lazyLoadImages() {
+            const images = document.querySelectorAll('img[data-src]');
+
+            const imageObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        img.src = img.dataset.src;
+                        img.classList.add('loaded');
+                        observer.unobserve(img);
+                    }
+                });
+            });
+
+            images.forEach(img => imageObserver.observe(img));
+        }
+
+        // تأثيرات كتابة
+        function typeEffect(element, text, speed = 100) {
+            let i = 0;
+            element.innerHTML = '';
+            const timer = setInterval(() => {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(timer);
+                    element.classList.add('typing-effect');
+                }
+            }, speed);
+        }
+
+        // تحميل الصور المتقدم
+        function advancedLazyLoad() {
+            const lazyImages = [].slice.call(document.querySelectorAll("img.lazy"));
+
+            if ("IntersectionObserver" in window) {
+                let lazyImageObserver = new IntersectionObserver(function (entries, observer) {
+                    entries.forEach(function (entry) {
+                        if (entry.isIntersecting) {
+                            let lazyImage = entry.target;
+                            lazyImage.src = lazyImage.dataset.src;
+                            lazyImage.classList.remove("lazy");
+                            lazyImageObserver.unobserve(lazyImage);
+                        }
+                    });
+                });
+
+                lazyImages.forEach(function (lazyImage) {
+                    lazyImageObserver.observe(lazyImage);
+                });
+            }
+        }
+
+        // Initialize
+        function init() {
+            renderProducts();
+            renderEvents();
+            renderFactories();
+            renderCerts();
+            renderClients();
+
+            document.getElementById('year').textContent = new Date().getFullYear();
+
+            const animatedEls = document.querySelectorAll('[data-animate]');
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    }
+                });
+            }, { threshold: 0.15 });
+
+            animatedEls.forEach(el => observer.observe(el));
+
+            // تحميل الصور بطريقة متأخرة
+            setTimeout(lazyLoadImages, 500);
+
+            // مؤشر التقدم
+            window.addEventListener('scroll', () => {
+                const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+                const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                const scrolled = (winScroll / height) * 100;
+                document.getElementById("progressBar").style.width = scrolled + "%";
+
+                // تأثير الشريط العلوي عند التمرير
+                const header = document.querySelector('.header');
+                if (window.scrollY > 100) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+
+            // تأثيرات الكتابة للنصوص المهمة
+            // typeEffect(document.getElementById('hero-title'), 'شريكك الموثوق في حلول التعبئة والتغليف');
+        }
+
+        // بدء التشغيل عند تحميل الصفحة
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+
+        // Language switch
+        function switchLang(lang) {
+            if (lang === 'en') {
+                document.body.dir = 'ltr';
+                document.documentElement.lang = 'en';
+                document.getElementById('hero-title').textContent = 'Your Trusted Partner in Packaging Solutions';
+                document.getElementById('hero-sub').textContent = 'Advanced pharmaceutical and industrial solutions with full commitment to global quality standards.';
+                document.getElementById('about-title').textContent = 'About Us';
+                document.getElementById('about-sub').textContent = 'History and Experience since 1993';
+                document.getElementById('about-text').textContent = 'MCI was founded in 1993 in Syria and expanded to Egypt in 2011. We have 4 factories and 6 main departments providing high-quality products for the pharmaceutical sector. We pride ourselves on delivering innovative and reliable solutions that meet the highest global quality standards.';
+                document.getElementById('products-title').textContent = 'Products';
+                document.getElementById('products-sub').textContent = 'Specialized collection without prices';
+                document.getElementById('events-title').textContent = 'Events';
+                document.getElementById('factories-title').textContent = 'Factories';
+                document.getElementById('quality-title').textContent = 'Quality Certificates';
+                document.getElementById('clients-title').textContent = 'Our Clients';
+                document.getElementById('contact-title').textContent = 'Contact Us';
+
+                // تحديث نص نافذة الكتالوج للغة الإنجليزية
+                const modal = document.getElementById('catalogModal');
+                if (modal.style.display === 'flex') {
+                    modal.querySelector('h3').textContent = 'MCI Product Catalog';
+                    modal.querySelector('p').textContent = 'The catalog contains complete information about all our products of medicine caps and pharmaceutical packaging solutions. Click the download button to get the PDF catalog.';
+                    modal.querySelector('.download-btn').textContent = 'Download Catalog';
+                    modal.querySelector('.cancel-btn').textContent = 'Cancel';
+                }
+            } else {
+                document.body.dir = 'rtl';
+                document.documentElement.lang = 'ar';
+                document.getElementById('hero-title').textContent = 'شريكك الموثوق في حلول التعبئة والتغليف';
+                document.getElementById('hero-sub').textContent = 'حلول دوائية وصناعية متقدمة مع التزام تام بمعايير الجودة العالمية.';
+                document.getElementById('about-title').textContent = 'من نحن';
+                document.getElementById('about-sub').textContent = 'تاريخ وخبرة منذ 1993';
+                document.getElementById('about-text').textContent = 'تأسست MCI عام 1993 في سوريا وتوسعت لمصر عام 2011. لدينا 4 مصانع و6 إدارات رئيسية لنقدم منتجات عالية الجودة لقطاع الأدوية. نفتخر بتقديم حلول مبتكرة وموثوقة تلبي أعلى معايير الجودة العالمية.';
+                document.getElementById('products-title').textContent = 'المنتجات';
+                document.getElementById('products-sub').textContent = 'مجموعة متخصصة بدون أسعار';
+                document.getElementById('events-title').textContent = 'الأحداث';
+                document.getElementById('factories-title').textContent = 'المصانع';
+                document.getElementById('quality-title').textContent = 'شهادات الجودة';
+                document.getElementById('clients-title').textContent = 'عملاؤنا';
+                document.getElementById('contact-title').textContent = 'اتصل بنا';
+
+                // تحديث نص نافذة الكتالوج للغة العربية
+                const modal = document.getElementById('catalogModal');
+                if (modal.style.display === 'flex') {
+                    modal.querySelector('h3').textContent = 'كتالوج منتجات MCI';
+                    modal.querySelector('p').textContent = 'يحتوي الكتالوج على معلومات كاملة عن جميع منتجاتنا من أغطية الأدوية وحلول التغليف الدوائي. اضغط على زر التحميل لتحميل الكتالوج بصيغة PDF.';
+                    modal.querySelector('.download-btn').textContent = 'تحميل الكتالوج';
+                    modal.querySelector('.cancel-btn').textContent = 'إلغاء';
+                }
+            }
+            document.querySelectorAll('.lang-switch button').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`.lang-switch button[onclick="switchLang('${lang}')"]`).classList.add('active');
+        }
+    </script>
+
+<!-- نظام التحكم الإداري -->
+<div id="adminPanel" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:90%; max-width:500px; max-height:80vh; background:var(--blue-dark); border:2px solid var(--orange-300); border-radius:var(--border-radius-xl); z-index:10000; box-shadow:var(--shadow-lg); overflow-y:auto;">
+    <div style="padding:20px; position:relative;">
+        <button onclick="MCICMS.toggleAdminPanel()" style="position:absolute; top:15px; left:15px; background:none; border:none; color:var(--orange-300); cursor:pointer; font-size:20px;">
+            <i class="fas fa-times"></i>
+        </button>
+        <h3 style="text-align:center; margin-bottom:20px; color:var(--orange-300);">لوحة تحكم MCI</h3>
+        
+        <div class="admin-tabs" style="display:flex; gap:5px; margin-bottom:20px; justify-content:center;">
+            <button onclick="MCICMS.showTab('content')" class="admin-tab-btn active">المحتوى</button>
+            <button onclick="MCICMS.showTab('products')" class="admin-tab-btn">المنتجات</button>
+            <button onclick="MCICMS.showTab('settings')" class="admin-tab-btn">الإعدادات</button>
+        </div>
+        
+        <div id="adminTabContent"></div>
+    </div>
+</div>
+
+<!-- زر تشغيل لوحة التحكم -->
+<button id="adminToggleBtn">
+    <i class="fas fa-cog"></i>
+</button>
+
+<!-- نافذة تحميل الصور -->
+<input type="file" id="imageUploadInput" accept="image/*" style="display:none;">
+<script>
+// ==============================================
+// نظام التحكم الإداري MCI CMS
+// ==============================================
+
+const MCICMS = {
+    isEditMode: false,
+    currentTab: 'content',
+    currentImageElement: null,
+    currentProductIndex: null,
+    
+    init() {
+        this.loadContent();
+        this.setupEventListeners();
+        this.setupImageUpload();
+        console.log('نظام إدارة MCI جاهز للاستخدام');
+    },
+    
+    setupEventListeners() {
+        // زر toggle لوحة التحكم
+        document.getElementById('adminToggleBtn').addEventListener('click', () => {
+            this.toggleAdminPanel();
+        });
+        
+        // تمكين وضع التعديل بالنقر المزدوج على Ctrl
+        let ctrlPressed = false;
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey) ctrlPressed = true;
+            if (e.ctrlKey && e.key === 'Control' && ctrlPressed) {
+                this.toggleEditMode();
+                ctrlPressed = false;
+            }
+        });
+        
+        document.addEventListener('keyup', () => {
+            ctrlPressed = false;
+        });
+    },
+    
+    setupImageUpload() {
+        const imageInput = document.getElementById('imageUploadInput');
+        imageInput.addEventListener('change', (e) => {
+            this.handleImageUpload(e);
+        });
+    },
+    
+    toggleAdminPanel() {
+        const panel = document.getElementById('adminPanel');
+        const overlay = document.createElement('div');
+        overlay.className = 'overlay-dark';
+        overlay.id = 'adminOverlay';
+        
+        if (panel.style.display === 'none') {
+            panel.style.display = 'block';
+            document.body.appendChild(overlay);
+            document.getElementById('adminOverlay').style.display = 'block';
+            this.showTab(this.currentTab);
+        } else {
+            panel.style.display = 'none';
+            if (document.getElementById('adminOverlay')) {
+                document.getElementById('adminOverlay').remove();
+            }
+        }
+    },
+    
+    showTab(tabName) {
+        this.currentTab = tabName;
+        const contentDiv = document.getElementById('adminTabContent');
+        
+        // تحديث أزرار التبويبات
+        document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        event.target.classList.add('active');
+        
+        switch(tabName) {
+            case 'content':
+                contentDiv.innerHTML = this.getContentTabHTML();
+                break;
+            case 'products':
+                contentDiv.innerHTML = this.getProductsTabHTML();
+                break;
+            case 'settings':
+                contentDiv.innerHTML = this.getSettingsTabHTML();
+                break;
+        }
+    },
+    
+    getContentTabHTML() {
+        return `
+            <div class="admin-section">
+                <h4><i class="fas fa-edit"></i> تعديل النصوص</h4>
+                <p>انقر على أي نص في الصفحة لتعديله مباشرة</p>
+                <button class="admin-btn" onclick="MCICMS.toggleEditMode()">
+                    ${this.isEditMode ? 'تعطيل' : 'تمكين'} وضع التعديل
+                </button>
+            </div>
+            
+            <div class="admin-section">
+                <h4><i class="fas fa-image"></i> تعديل الصور</h4>
+                <p>انقر على أي صورة في الصفحة لاستبدالها</p>
+            </div>
+            
+            <div class="admin-section">
+                <h4><i class="fas fa-save"></i> حفظ المحتوى</h4>
+                <button class="admin-btn" onclick="MCICMS.saveContent()">
+                    حفظ جميع التغييرات
+                </button>
+                <button class="admin-btn secondary" onclick="MCICMS.resetContent()">
+                    استعادة الإعدادات الأصلية
+                </button>
+            </div>
+        `;
+    },
+    
+    getProductsTabHTML() {
+        let productsHTML = PRODUCTS.map((product, index) => `
+            <div class="admin-section">
+                <h4>منتج #${index + 1}</h4>
+                <input type="text" class="admin-input" value="${product.name}" 
+                    onchange="MCICMS.updateProduct(${index}, 'name', this.value)" 
+                    placeholder="اسم المنتج">
+                <textarea class="admin-input" style="min-height:80px;"
+                    onchange="MCICMS.updateProduct(${index}, 'desc', this.value)" 
+                    placeholder="وصف المنتج">${product.desc}</textarea>
+                <div style="display:flex; align-items:center; margin:10px 0; gap:10px;">
+                    <img src="${product.img}" class="image-preview" id="preview-${index}">
+                    <button class="admin-btn" onclick="MCICMS.changeProductImage(${index})">تغيير الصورة</button>
+                </div>
+                <button class="admin-btn secondary" onclick="MCICMS.removeProduct(${index})">حذف المنتج</button>
+            </div>
+        `).join('');
+        
+        return `
+            ${productsHTML}
+            <div class="admin-section">
+                <h4><i class="fas fa-plus"></i> إضافة منتج جديد</h4>
+                <input type="text" class="admin-input" id="newProductName" placeholder="اسم المنتج">
+                <textarea class="admin-input" id="newProductDesc" placeholder="وصف المنتج" style="min-height:80px;"></textarea>
+                <button class="admin-btn" onclick="MCICMS.addNewProduct()">إضافة منتج</button>
+            </div>
+        `;
+    },
+    
+    getSettingsTabHTML() {
+        return `
+            <div class="admin-section">
+                <h4><i class="fas fa-paint-brush"></i> إعدادات المظهر</h4>
+                <label>اللون الرئيسي:</label>
+                <input type="color" class="admin-input" id="themeColor" value="#ff7a18" 
+                    onchange="MCICMS.updateThemeColor(this.value)">
+            </div>
+            
+            <div class="admin-section">
+                <h4><i class="fas fa-download"></i> النسخ الاحتياطي</h4>
+                <button class="admin-btn" onclick="MCICMS.exportContent()">تصدير المحتوى</button>
+                <button class="admin-btn secondary" onclick="MCICMS.importContent()">استيراد المحتوى</button>
+            </div>
+        `;
+    },
+    
+    toggleEditMode() {
+        this.isEditMode = !this.isEditMode;
+        document.body.classList.toggle('edit-mode', this.isEditMode);
+        
+        if (this.isEditMode) {
+            this.makeContentEditable();
+            alert('وضع التعديل مفعل - انقر على أي نص أو صورة لتعديلها');
+        } else {
+            alert('وضع التعديل معطل');
+        }
+        
+        this.showTab(this.currentTab);
+    },
+    
+    makeContentEditable() {
+        const editableSelectors = [
+            '#hero-title', '#hero-sub', '#about-title', '#about-sub', 
+            '#about-text', '#products-title', '#products-sub',
+            '#events-title', '#factories-title', '#quality-title',
+            '#clients-title', '#contact-title', '.chairman-message',
+            '.position', '.signature'
+        ];
+        
+        editableSelectors.forEach(selector => {
+            const elements = document.querySelectorAll(selector);
+            elements.forEach(el => {
+                el.classList.add('editable');
+                el.setAttribute('contenteditable', this.isEditMode);
+                el.setAttribute('data-editable', el.id || this.generateId(el));
+                
+                el.addEventListener('blur', () => {
+                    this.saveElementContent(el);
+                });
+            });
+        });
+        
+        // جعل الصور قابلة للتعديل
+        const images = document.querySelectorAll('img:not(.admin-tab-btn img)');
+        images.forEach(img => {
+            img.classList.add('editable');
+            img.setAttribute('data-image-editable', img.id || this.generateId(img));
+            
+            img.addEventListener('click', () => {
+                if (this.isEditMode) {
+                    this.changeImage(img);
+                }
+            });
+        });
+    },
+    
+    generateId(element) {
+        if (!element.id) {
+            element.id = 'editable-' + Math.random().toString(36).substr(2, 9);
+        }
+        return element.id;
+    },
+    
+    saveElementContent(element) {
+        const content = this.getAllContent();
+        localStorage.setItem('mci_content', JSON.stringify(content));
+    },
+    
+    getAllContent() {
+        const content = {};
+        const editableElements = document.querySelectorAll('[data-editable], [data-image-editable]');
+        
+        editableElements.forEach(el => {
+            const key = el.getAttribute('data-editable') || el.getAttribute('data-image-editable');
+            if (el.tagName === 'IMG') {
+                content[key] = el.src;
+            } else {
+                content[key] = el.innerHTML;
+            }
+        });
+        
+        return content;
+    },
+    
+    loadContent() {
+        const savedContent = localStorage.getItem('mci_content');
+        if (savedContent) {
+            const content = JSON.parse(savedContent);
+            this.applyContent(content);
+        }
+        
+        const savedProducts = localStorage.getItem('mci_products');
+        if (savedProducts) {
+            const products = JSON.parse(savedProducts);
+            products.forEach((prod, index) => {
+                if (PRODUCTS[index]) {
+                    PRODUCTS[index] = {...PRODUCTS[index], ...prod};
+                }
+            });
+            renderProducts();
+        }
+    },
+    
+    applyContent(content) {
+        for (const [key, value] of Object.entries(content)) {
+            const element = document.getElementById(key);
+            if (element) {
+                if (element.tagName === 'IMG') {
+                    element.src = value;
+                } else {
+                    element.innerHTML = value;
+                }
+            }
+        }
+    },
+    
+    changeImage(imgElement) {
+        this.currentImageElement = imgElement;
+        document.getElementById('imageUploadInput').click();
+    },
+    
+    handleImageUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        
+        // تحقق من حجم الملف (5MB كحد أقصى)
+        if (file.size > 5 * 1024 * 1024) {
+            alert('حجم الملف كبير جداً. الحد الأقصى هو 5MB');
+            return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            if (this.currentImageElement) {
+                this.currentImageElement.src = e.target.result;
+                this.saveElementContent(this.currentImageElement);
+                
+                // إذا كانت صورة منتج، قم بتحديث البيانات
+                if (this.currentProductIndex !== null) {
+                    PRODUCTS[this.currentProductIndex].img = e.target.result;
+                    localStorage.setItem('mci_products', JSON.stringify(PRODUCTS));
+                    this.currentProductIndex = null;
+                }
+            }
+        };
+        reader.readAsDataURL(file);
+        
+        event.target.value = '';
+    },
+    
+    saveContent() {
+        const content = this.getAllContent();
+        localStorage.setItem('mci_content', JSON.stringify(content));
+        alert('تم حفظ المحتوى بنجاح!');
+    },
+    
+    resetContent() {
+        if (confirm('هل أنت متأكد من أنك تريد استعادة المحتوى الأصلي؟ سيتم فقدان جميع التغييرات.')) {
+            localStorage.removeItem('mci_content');
+            localStorage.removeItem('mci_products');
+            location.reload();
+        }
+    },
+    
+    updateProduct(index, field, value) {
+        PRODUCTS[index][field] = value;
+        localStorage.setItem('mci_products', JSON.stringify(PRODUCTS));
+        renderProducts();
+    },
+    
+    changeProductImage(index) {
+        this.currentProductIndex = index;
+        document.getElementById('imageUploadInput').click();
+    },
+    
+    addNewProduct() {
+        const name = document.getElementById('newProductName').value;
+        const desc = document.getElementById('newProductDesc').value;
+        
+        if (!name || !desc) {
+            alert('يرجى ملء جميع الحقول');
+            return;
+        }
+        
+        const newProduct = {
+            name: name,
+            desc: desc,
+            img: 'images/placeholder-product.jpg'
+        };
+        
+        PRODUCTS.push(newProduct);
+        localStorage.setItem('mci_products', JSON.stringify(PRODUCTS));
+        renderProducts();
+        
+        // مسح الحقول
+        document.getElementById('newProductName').value = '';
+        document.getElementById('newProductDesc').value = '';
+        
+        alert('تم إضافة المنتج بنجاح!');
+    },
+    
+    removeProduct(index) {
+        if (confirm('هل أنت متأكد من أنك تريد حذف هذا المنتج؟')) {
+            PRODUCTS.splice(index, 1);
+            localStorage.setItem('mci_products', JSON.stringify(PRODUCTS));
+            renderProducts();
+            this.showTab('products');
+        }
+    },
+    
+    updateThemeColor(color) {
+        document.documentElement.style.setProperty('--orange-500', color);
+    },
+    
+    exportContent() {
+        const content = {
+            text: this.getAllContent(),
+            products: PRODUCTS
+        };
+        
+        const dataStr = JSON.stringify(content, null, 2);
+        const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+        
+        const exportFileDefaultName = 'mci-backup.json';
+        
+        const linkElement = document.createElement('a');
+        linkElement.setAttribute('href', dataUri);
+        linkElement.setAttribute('download', exportFileDefaultName);
+        linkElement.click();
+    },
+    
+    importContent() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.json';
+        
+        input.onchange = e => {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                try {
+                    const content = JSON.parse(e.target.result);
+                    
+                    if (content.text) {
+                        localStorage.setItem('mci_content', JSON.stringify(content.text));
+                        MCICMS.applyContent(content.text);
+                    }
+                    
+                    if (content.products) {
+                        localStorage.setItem('mci_products', JSON.stringify(content.products));
+                        content.products.forEach((prod, index) => {
+                            if (PRODUCTS[index]) {
+                                PRODUCTS[index] = {...PRODUCTS[index], ...prod};
+                            } else {
+                                PRODUCTS.push(prod);
+                            }
+                        });
+                        renderProducts();
+                    }
+                    
+                    alert('تم استيراد المحتوى بنجاح!');
+                } catch (error) {
+                    alert('خطأ في استيراد الملف: ' + error.message);
+                }
+            };
+            
+            reader.readAsText(file);
+        };
+        
+        input.click();
+    }
+};
+
+// تهيئة النظام بعد تحميل الصفحة
+document.addEventListener('DOMContentLoaded', function() {
+    // تهيئة نظام التحكم
+    MCICMS.init();
+    
+    // إضافة خاصية data-editable للعناصر الرئيسية
+    const elementsToMakeEditable = [
+        'hero-title', 'hero-sub', 'about-title', 'about-sub', 'about-text',
+        'products-title', 'products-sub', 'events-title', 'factories-title',
+        'quality-title', 'clients-title', 'contact-title'
+    ];
+    
+    elementsToMakeEditable.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.setAttribute('data-editable', id);
+        }
+    });
+    
+    // إضافة خاصية data-image-editable للصور الرئيسية
+    const imagesToMakeEditable = [
+        '.logo img', '.about-image', '.chairman-image img', 
+        '.product-image img', '.client img', '.factory img',
+        '.cert img', '.event-card img'
+    ];
+    
+    imagesToMakeEditable.forEach(selector => {
+        document.querySelectorAll(selector).forEach(img => {
+            img.setAttribute('data-image-editable', img.id || 'img-' + Math.random().toString(36).substr(2, 9));
+        });
+    });
+});
+
+// جعل الدوال متاحة عالمياً
+window.MCICMS = MCICMS;
+</script>
+
+</body>
+</html>
